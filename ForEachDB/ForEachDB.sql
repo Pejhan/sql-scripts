@@ -3,8 +3,7 @@ SET QUOTED_IDENTIFIER OFF
 SET NOCOUNT ON
 
 DECLARE @Query VARCHAR(MAX) = "
-select count(*) c
-from information_schema.tables t
+select db_name() c
 "
 
 
@@ -28,7 +27,9 @@ EXEC (@DDL)
 
 DECLARE @db NVARCHAR(35)
 DECLARE db_crsr CURSOR FOR 
-SELECT name FROM sys.databases db WHERE (name LIKE 'Main%' OR name LIKE 'Developer%')
+SELECT db.name 
+FROM sys.databases db 
+WHERE db.state = 0
 
 OPEN db_crsr
 FETCH NEXT FROM db_crsr
@@ -37,19 +38,13 @@ WHILE @@FETCH_STATUS = 0
 BEGIN 
 	BEGIN TRY
 	    DECLARE @cmd_ VARCHAR(MAX) = "USE " + @db + CHAR(10) +
-		"DECLARE @Query VARCHAR(MAX) = """ + @Query + """" + CHAR(10) +
-		"EXEC tls.sp_GetOptimizedCmd @Query OUTPUT
-		
-		DECLARE @cmd1 VARCHAR(MAX) = ""
+		"
 		INSERT ##RESULT
 		SELECT db_name() as db_name,*
-		FROM ("" + @Query + "") A
-		""
-		--PRINT @cmd1
-		EXEC (@cmd1)"
-		PRINT(@cmd_)
+		FROM (" + @Query + ") A
+		"
 		EXEC (@cmd_)
-		--PRINT '	' + @db
+		PRINT '	' + @db
 	END TRY
 	BEGIN CATCH
 	    PRINT 'X	' + @db + '				' + ERROR_MESSAGE()
@@ -67,6 +62,6 @@ DEALLOCATE db_crsr
 SELECT *
 FROM ##RESULT WITH (NOLOCK)
 
---SELECT c.COLUMN_NAME, c.ORDINAL_POSITION, c.DATA_TYPE
---FROM tempdb.INFORMATION_SCHEMA.COLUMNS c
---WHERE c.TABLE_NAME = '##result'
+SELECT c.COLUMN_NAME, c.ORDINAL_POSITION, c.DATA_TYPE
+FROM tempdb.INFORMATION_SCHEMA.COLUMNS c
+WHERE c.TABLE_NAME = '##RESULT'
