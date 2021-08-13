@@ -1,5 +1,5 @@
 # Execute a Query against all Databases
-During some point of production there comes a time where there is a need for camparison between various databases. Usually it can be handled through the an undocumented procedure called sp_msforeachdb which is not without its limitations, to name a fiew:
+During some point in production there comes a time where there is a need for camparison between various databases. Usually it can be handled through the an undocumented procedure called sp_msforeachdb which is not without its limitations, to name a fiew:
   - The @command parameter accepts nvarchar(2000); meaning if the query you wish to execute is anything longer than 2000 characters it will be truncated and produces errors.
   - The results are not easily comparable, each result is returned in a different grid which makes monitoring them a cumbersome effort.
 
