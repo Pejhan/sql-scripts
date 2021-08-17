@@ -6,5 +6,5 @@ During some point in production there comes a time where there is a need for cam
 Now because of the nature of the work that I do, I'll be needing this sort of comparison more often than not. I set out to come up with a solution and before you is the result.
 This script adresses problems mentioned above, but there are always limitations to be considered:
   - Mind performance before everything else; refrain from using queries that require heavy workload, for obvious reasons.
-  - In order to be able to check progress I decided to store result sets in a global temp table, consider changing it to local tempo table if fot whatever reason this causes issues.
+  - In order to be able to check progress I decided to store result sets in a global temp table, consider changing it to local temp table if for whatever reason this causes issues.
   - Lastly, do remember that all your columns must have aliases otherwise, naturally, sql engine would ask you to.
